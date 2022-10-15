@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/ahmadirfaan/project-go/models/database"
 	"github.com/ahmadirfaan/project-go/repositories"
-	"github.com/gomodule/redigo/redis"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -19,10 +18,10 @@ type locationService struct {
 	ProvinceRepository repositories.ProvinceRepository
 	RegencyRepository  repositories.RegencyRepository
 	DistrictRepository repositories.DistrictRepository
-	RedisClient        redis.Conn
+	RedisClient        repositories.RedisRepository
 }
 
-func NewLocationService(pr repositories.ProvinceRepository, rr repositories.RegencyRepository, dr repositories.DistrictRepository, rc redis.Conn) LocationService {
+func NewLocationService(pr repositories.ProvinceRepository, rr repositories.RegencyRepository, dr repositories.DistrictRepository, rc repositories.RedisRepository) LocationService {
 	return &locationService{
 		ProvinceRepository: pr,
 		RegencyRepository:  rr,
@@ -41,21 +40,15 @@ const (
 
 func (l *locationService) GetAllLocationProvince() ([]database.Provinces, error) {
 	var provinces []database.Provinces
-	data, err := l.RedisClient.Do("GET", KEY_ALL_PROVINCE)
+	data, err := l.RedisClient.GetDataFromRedis(KEY_ALL_PROVINCE)
 	if err != nil || data == nil {
 		provinces, err = l.ProvinceRepository.GetAll()
-		marshal, _ := json.Marshal(provinces)
-		_, err2 := l.RedisClient.Do("SET", KEY_ALL_PROVINCE, marshal)
-		if err2 != nil {
-			log.Error("Error connection to redis store data : %v ", data)
-		}
-		_, err2 = l.RedisClient.Do("EXPIRE", KEY_ALL_PROVINCE, TIME_EXPIRED_KEY)
-		if err2 != nil {
-			log.Error("Error set expired key to redis : %v ", data)
+		err := l.RedisClient.SetDataToRedis(provinces, KEY_ALL_PROVINCE, TIME_EXPIRED_KEY)
+		if err != nil {
+			return nil, err
 		}
 	} else {
-		bytes := []byte(convertToString(data))
-		err := json.Unmarshal(bytes, &provinces)
+		err := json.Unmarshal(data, &provinces)
 		if err != nil {
 			return nil, err
 		}
@@ -68,21 +61,15 @@ func (l *locationService) GetAllLocationProvince() ([]database.Provinces, error)
 func (l *locationService) GetAllRegencyByProvince(provinceId string) ([]database.Regencies, error) {
 	var regencies []database.Regencies
 	keyRedis := KEY_ALL_REGENCY_BY_PROVINCE_ID + "_" + provinceId
-	data, err := l.RedisClient.Do("GET", keyRedis)
+	data, err := l.RedisClient.GetDataFromRedis(keyRedis)
 	if err != nil || data == nil {
 		regencies, err = l.RegencyRepository.FindByProvinceId(provinceId)
-		marshal, _ := json.Marshal(regencies)
-		_, err2 := l.RedisClient.Do("SET", keyRedis, marshal)
-		if err2 != nil {
-			log.Error("Error connection to redis store data : %v ", data)
-		}
-		_, err2 = l.RedisClient.Do("EXPIRE", keyRedis, TIME_EXPIRED_KEY)
-		if err2 != nil {
-			log.Error("Error set expired key to redis : %v ", data)
+		err := l.RedisClient.SetDataToRedis(regencies, keyRedis, TIME_EXPIRED_KEY)
+		if err != nil {
+			return nil, err
 		}
 	} else {
-		bytes := []byte(convertToString(data))
-		err := json.Unmarshal(bytes, &regencies)
+		err := json.Unmarshal(data, &regencies)
 		if err != nil {
 			return nil, err
 		}
@@ -95,21 +82,15 @@ func (l *locationService) GetAllRegencyByProvince(provinceId string) ([]database
 func (l *locationService) GetAllDistrictByRegency(regencyId string) ([]database.Districts, error) {
 	var districts []database.Districts
 	keyRedis := KEY_ALL_DISTRICT_BY_REGENCY_ID + "_" + regencyId
-	data, err := l.RedisClient.Do("GET", keyRedis)
+	data, err := l.RedisClient.GetDataFromRedis(keyRedis)
 	if err != nil || data == nil {
 		districts, err = l.DistrictRepository.FindByRegencyId(regencyId)
-		marshal, _ := json.Marshal(districts)
-		_, err2 := l.RedisClient.Do("SET", keyRedis, marshal)
-		if err2 != nil {
-			log.Error("Error connection to redis store data : %v ", data)
-		}
-		_, err2 = l.RedisClient.Do("EXPIRE", keyRedis, TIME_EXPIRED_KEY)
-		if err2 != nil {
-			log.Error("Error set expired key to redis : %v ", data)
+		err := l.RedisClient.SetDataToRedis(districts, keyRedis, TIME_EXPIRED_KEY)
+		if err != nil {
+			return nil, err
 		}
 	} else {
-		bytes := []byte(convertToString(data))
-		err := json.Unmarshal(bytes, &districts)
+		err := json.Unmarshal(data, &districts)
 		if err != nil {
 			return nil, err
 		}
@@ -121,33 +102,19 @@ func (l *locationService) GetAllDistrictByRegency(regencyId string) ([]database.
 func (l *locationService) FindDistrictById(districtId string) (database.Districts, error) {
 	var district database.Districts
 	keyRedis := KEY_DISCTRICT_ID + "_" + districtId
-	data, err := l.RedisClient.Do("GET", keyRedis)
+	data, err := l.RedisClient.GetDataFromRedis(keyRedis)
 	if err != nil || data == nil {
 		district, err = l.DistrictRepository.FindById(districtId)
-		marshal, _ := json.Marshal(district)
-		_, err2 := l.RedisClient.Do("SET", keyRedis, marshal)
-		if err2 != nil {
-			log.Error("Error connection to redis store data : %v ", data)
-		}
-		_, err2 = l.RedisClient.Do("EXPIRE", keyRedis, TIME_EXPIRED_KEY)
-		if err2 != nil {
-			log.Error("Error set expired key to redis : %v ", data)
+		err := l.RedisClient.SetDataToRedis(district, keyRedis, TIME_EXPIRED_KEY)
+		if err != nil {
+			return database.Districts{}, err
 		}
 	} else {
-		bytes := []byte(convertToString(data))
-		err := json.Unmarshal(bytes, &district)
+		err := json.Unmarshal(data, &district)
 		if err != nil {
 			return database.Districts{}, err
 		}
 		log.Info("Check data: %v ", district)
 	}
 	return district, err
-}
-
-func convertToString(bs interface{}) string {
-	ba := []byte{}
-	for _, b := range bs.([]uint8) {
-		ba = append(ba, byte(b))
-	}
-	return string(ba)
 }

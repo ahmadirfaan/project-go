@@ -45,10 +45,11 @@ func (cli *Cli) Run(application *app.Application) {
 	districtRepo := repositories.NewDistrictRepository(db)
 	transactionRepo := repositories.NewTransactionRepository(db)
 	transactionTypeRepo := repositories.NewTransactionTypeRepository(db)
+	redisRepo := repositories.NewRedisRepository(connRedis)
 
 	// Service
 	customerService := service.NewCustomerService(customerRepo, userRepo, db)
-	locationService := service.NewLocationService(provinceRepo, regencyRepo, districtRepo, connRedis)
+	locationService := service.NewLocationService(provinceRepo, regencyRepo, districtRepo, redisRepo)
 	loginService := service.NewLoginService(userRepo)
 	agentService := service.NewAgentService(agentRepo, userRepo, locationService, db)
 	transactionService := service.NewTransactionService(
