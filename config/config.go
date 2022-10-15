@@ -35,12 +35,12 @@ func Init() *Config {
 	log.SetOutput(os.Stdout)
 
 	appConfig := &Config{
-		AppName:     GetString("APP_NAME"),
-		AppPort:     GetString("APP_PORT"),
-		LogLevel:    GetString("LOG_LEVEL"),
-		Environment: GetString("ENVIRONMENT"),
-		// JWTSecret:      GetString("JWT_SECRET"),
-		// RedisAddress:   GetString("REDIS_ADDRESS"),
+		AppName:                  GetString("APP_NAME"),
+		AppPort:                  GetString("APP_PORT"),
+		LogLevel:                 GetString("LOG_LEVEL"),
+		Environment:              GetString("ENVIRONMENT"),
+		JWTSecret:                GetString("JWT_SECRET"),
+		RedisAddress:             GetString("REDIS_ADDRESS"),
 		DBUsername:               GetString("DB_USERNAME"),
 		DBPassword:               GetString("DB_PASSWORD"),
 		DBHost:                   GetString("DB_HOST"),

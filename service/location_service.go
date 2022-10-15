@@ -43,12 +43,12 @@ func (l *locationService) GetAllLocationProvince() ([]database.Provinces, error)
 	data, err := redis.Values(l.RedisClient.Do("HGETALL", KEY_ALL_PROVINCE))
 	if err != nil || data != nil {
 		provinces, err = l.ProvinceRepository.GetAll()
-		_, err = l.RedisClient.Do("HSET", KEY_ALL_PROVINCE, provinces)
-		if err != nil {
+		_, err2 := l.RedisClient.Do("HSET", KEY_ALL_PROVINCE, provinces)
+		if err2 != nil {
 			log.Error("Error connection to redis store data : %v ", data)
 		}
-		_, err = l.RedisClient.Do("EXPIRE", KEY_ALL_PROVINCE, TIME_EXPIRED_KEY)
-		if err != nil {
+		_, err2 = l.RedisClient.Do("EXPIRE", KEY_ALL_PROVINCE, TIME_EXPIRED_KEY)
+		if err2 != nil {
 			log.Error("Error set expired key to redis : %v ", data)
 		}
 	} else {
@@ -64,19 +64,20 @@ func (l *locationService) GetAllRegencyByProvince(provinceId string) ([]database
 	keyRedis := KEY_ALL_REGENCY_BY_PROVINCE_ID + "_" + provinceId
 	data, err := redis.Values(l.RedisClient.Do("HGETALL", keyRedis))
 	if err != nil || data != nil {
-		regencies, err := l.RegencyRepository.FindByProvinceId(provinceId)
-		_, err = l.RedisClient.Do("HSET", keyRedis, regencies)
-		if err != nil {
+		regencies, err = l.RegencyRepository.FindByProvinceId(provinceId)
+		_, err2 := l.RedisClient.Do("HSET", keyRedis, regencies)
+		if err2 != nil {
 			log.Error("Error connection to redis store data : %v ", data)
 		}
-		_, err = l.RedisClient.Do("EXPIRE", keyRedis, TIME_EXPIRED_KEY)
-		if err != nil {
+		_, err2 = l.RedisClient.Do("EXPIRE", keyRedis, TIME_EXPIRED_KEY)
+		if err2 != nil {
 			log.Error("Error set expired key to redis : %v ", data)
 		}
 	} else {
 		err = redis.ScanStruct(data, &regencies)
 		log.Info("Check data: %v ", data)
 	}
+	err = nil
 	return regencies, err
 }
 
@@ -85,13 +86,13 @@ func (l *locationService) GetAllDistrictByRegency(regencyId string) ([]database.
 	keyRedis := KEY_ALL_DISTRICT_BY_REGENCY_ID + "_" + regencyId
 	data, err := redis.Values(l.RedisClient.Do("HGETALL", keyRedis))
 	if err != nil || data != nil {
-		districts, err := l.DistrictRepository.FindByRegencyId(regencyId)
-		_, err = l.RedisClient.Do("HSET", keyRedis, districts)
-		if err != nil {
+		districts, err = l.DistrictRepository.FindByRegencyId(regencyId)
+		_, err2 := l.RedisClient.Do("HSET", keyRedis, districts)
+		if err2 != nil {
 			log.Error("Error connection to redis store data : %v ", data)
 		}
-		_, err = l.RedisClient.Do("EXPIRE", keyRedis, TIME_EXPIRED_KEY)
-		if err != nil {
+		_, err2 = l.RedisClient.Do("EXPIRE", keyRedis, TIME_EXPIRED_KEY)
+		if err2 != nil {
 			log.Error("Error set expired key to redis : %v ", data)
 		}
 	} else {
@@ -106,13 +107,13 @@ func (l *locationService) FindDistrictById(districtId string) (database.District
 	keyRedis := KEY_DISCTRICT_ID + "_" + districtId
 	data, err := redis.Values(l.RedisClient.Do("HGETALL", keyRedis))
 	if err != nil || data != nil {
-		district, err := l.DistrictRepository.FindById(districtId)
-		_, err = l.RedisClient.Do("HSET", keyRedis, district)
-		if err != nil {
+		district, err = l.DistrictRepository.FindById(districtId)
+		_, err2 := l.RedisClient.Do("HSET", keyRedis, district)
+		if err2 != nil {
 			log.Error("Error connection to redis store data : %v ", data)
 		}
-		_, err = l.RedisClient.Do("EXPIRE", keyRedis, TIME_EXPIRED_KEY)
-		if err != nil {
+		_, err2 = l.RedisClient.Do("EXPIRE", keyRedis, TIME_EXPIRED_KEY)
+		if err2 != nil {
 			log.Error("Error set expired key to redis : %v ", data)
 		}
 	} else {
