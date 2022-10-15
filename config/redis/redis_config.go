@@ -16,6 +16,5 @@ func InitRedisClient() redis.Conn {
 
 	pool.MaxActive = 10
 	conn := pool.Get()
-	defer conn.Close()
 	return conn
 }

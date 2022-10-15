@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"github.com/ahmadirfaan/project-go/models/database"
 	"github.com/ahmadirfaan/project-go/repositories"
 	"github.com/gomodule/redigo/redis"
@@ -31,7 +32,7 @@ func NewLocationService(pr repositories.ProvinceRepository, rr repositories.Rege
 }
 
 const (
-	TIME_EXPIRED_KEY               = 10800
+	TIME_EXPIRED_KEY               = 604800
 	KEY_ALL_PROVINCE               = "KEY_ALL_PROVINCE"
 	KEY_ALL_REGENCY_BY_PROVINCE_ID = "KEY_ALL_REGENCY_BY_PROVINCE_ID"
 	KEY_ALL_DISTRICT_BY_REGENCY_ID = "KEY_ALL_DISTRICT_BY_REGENCY_ID"
@@ -40,10 +41,11 @@ const (
 
 func (l *locationService) GetAllLocationProvince() ([]database.Provinces, error) {
 	var provinces []database.Provinces
-	data, err := redis.Values(l.RedisClient.Do("HGETALL", KEY_ALL_PROVINCE))
-	if err != nil || data != nil {
+	data, err := l.RedisClient.Do("GET", KEY_ALL_PROVINCE)
+	if err != nil || data == nil {
 		provinces, err = l.ProvinceRepository.GetAll()
-		_, err2 := l.RedisClient.Do("HSET", KEY_ALL_PROVINCE, provinces)
+		marshal, _ := json.Marshal(provinces)
+		_, err2 := l.RedisClient.Do("SET", KEY_ALL_PROVINCE, marshal)
 		if err2 != nil {
 			log.Error("Error connection to redis store data : %v ", data)
 		}
@@ -52,8 +54,12 @@ func (l *locationService) GetAllLocationProvince() ([]database.Provinces, error)
 			log.Error("Error set expired key to redis : %v ", data)
 		}
 	} else {
-		err = redis.ScanStruct(data, &provinces)
-		log.Info("Check data: %v ", data)
+		bytes := []byte(convertToString(data))
+		err := json.Unmarshal(bytes, &provinces)
+		if err != nil {
+			return nil, err
+		}
+		log.Info("Check data: %v ", provinces)
 	}
 
 	return provinces, err
@@ -62,10 +68,11 @@ func (l *locationService) GetAllLocationProvince() ([]database.Provinces, error)
 func (l *locationService) GetAllRegencyByProvince(provinceId string) ([]database.Regencies, error) {
 	var regencies []database.Regencies
 	keyRedis := KEY_ALL_REGENCY_BY_PROVINCE_ID + "_" + provinceId
-	data, err := redis.Values(l.RedisClient.Do("HGETALL", keyRedis))
-	if err != nil || data != nil {
+	data, err := l.RedisClient.Do("GET", keyRedis)
+	if err != nil || data == nil {
 		regencies, err = l.RegencyRepository.FindByProvinceId(provinceId)
-		_, err2 := l.RedisClient.Do("HSET", keyRedis, regencies)
+		marshal, _ := json.Marshal(regencies)
+		_, err2 := l.RedisClient.Do("SET", keyRedis, marshal)
 		if err2 != nil {
 			log.Error("Error connection to redis store data : %v ", data)
 		}
@@ -74,8 +81,12 @@ func (l *locationService) GetAllRegencyByProvince(provinceId string) ([]database
 			log.Error("Error set expired key to redis : %v ", data)
 		}
 	} else {
-		err = redis.ScanStruct(data, &regencies)
-		log.Info("Check data: %v ", data)
+		bytes := []byte(convertToString(data))
+		err := json.Unmarshal(bytes, &regencies)
+		if err != nil {
+			return nil, err
+		}
+		log.Info("Check data: %v ", regencies)
 	}
 	err = nil
 	return regencies, err
@@ -84,10 +95,11 @@ func (l *locationService) GetAllRegencyByProvince(provinceId string) ([]database
 func (l *locationService) GetAllDistrictByRegency(regencyId string) ([]database.Districts, error) {
 	var districts []database.Districts
 	keyRedis := KEY_ALL_DISTRICT_BY_REGENCY_ID + "_" + regencyId
-	data, err := redis.Values(l.RedisClient.Do("HGETALL", keyRedis))
-	if err != nil || data != nil {
+	data, err := l.RedisClient.Do("GET", keyRedis)
+	if err != nil || data == nil {
 		districts, err = l.DistrictRepository.FindByRegencyId(regencyId)
-		_, err2 := l.RedisClient.Do("HSET", keyRedis, districts)
+		marshal, _ := json.Marshal(districts)
+		_, err2 := l.RedisClient.Do("SET", keyRedis, marshal)
 		if err2 != nil {
 			log.Error("Error connection to redis store data : %v ", data)
 		}
@@ -96,8 +108,12 @@ func (l *locationService) GetAllDistrictByRegency(regencyId string) ([]database.
 			log.Error("Error set expired key to redis : %v ", data)
 		}
 	} else {
-		err = redis.ScanStruct(data, &districts)
-		log.Info("Check data: %v ", data)
+		bytes := []byte(convertToString(data))
+		err := json.Unmarshal(bytes, &districts)
+		if err != nil {
+			return nil, err
+		}
+		log.Info("Check data: %v ", districts)
 	}
 	return districts, err
 }
@@ -105,10 +121,11 @@ func (l *locationService) GetAllDistrictByRegency(regencyId string) ([]database.
 func (l *locationService) FindDistrictById(districtId string) (database.Districts, error) {
 	var district database.Districts
 	keyRedis := KEY_DISCTRICT_ID + "_" + districtId
-	data, err := redis.Values(l.RedisClient.Do("HGETALL", keyRedis))
-	if err != nil || data != nil {
+	data, err := l.RedisClient.Do("GET", keyRedis)
+	if err != nil || data == nil {
 		district, err = l.DistrictRepository.FindById(districtId)
-		_, err2 := l.RedisClient.Do("HSET", keyRedis, district)
+		marshal, _ := json.Marshal(district)
+		_, err2 := l.RedisClient.Do("SET", keyRedis, marshal)
 		if err2 != nil {
 			log.Error("Error connection to redis store data : %v ", data)
 		}
@@ -117,8 +134,20 @@ func (l *locationService) FindDistrictById(districtId string) (database.District
 			log.Error("Error set expired key to redis : %v ", data)
 		}
 	} else {
-		err = redis.ScanStruct(data, &district)
-		log.Info("Check data: %v ", data)
+		bytes := []byte(convertToString(data))
+		err := json.Unmarshal(bytes, &district)
+		if err != nil {
+			return database.Districts{}, err
+		}
+		log.Info("Check data: %v ", district)
 	}
 	return district, err
+}
+
+func convertToString(bs interface{}) string {
+	ba := []byte{}
+	for _, b := range bs.([]uint8) {
+		ba = append(ba, byte(b))
+	}
+	return string(ba)
 }
