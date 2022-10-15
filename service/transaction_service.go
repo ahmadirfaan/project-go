@@ -23,7 +23,7 @@ type TransactionService interface {
 type transactionService struct {
 	transactionsRepository    repositories.TransactionRepository
 	transactionTypeRepository repositories.TransactionTypeRepository
-	districtRepository        repositories.DistrictRepository
+	locationServices          LocationService
 	userRepository            repositories.UserRepository
 	agentRepository           repositories.AgentRepository
 	DB                        *gorm.DB
@@ -31,7 +31,7 @@ type transactionService struct {
 
 func NewTransactionService(tr repositories.TransactionRepository,
 	ttr repositories.TransactionTypeRepository,
-	dr repositories.DistrictRepository,
+	lr LocationService,
 	ur repositories.UserRepository,
 	ar repositories.AgentRepository,
 	db *gorm.DB) TransactionService {
@@ -39,7 +39,7 @@ func NewTransactionService(tr repositories.TransactionRepository,
 		transactionsRepository:    tr,
 		DB:                        db,
 		transactionTypeRepository: ttr,
-		districtRepository:        dr,
+		locationServices:          lr,
 		userRepository:            ur,
 		agentRepository:           ar,
 	}
@@ -270,7 +270,7 @@ func (t *transactionService) validateUserForTransaction(request web.CreateTransa
 		return errors.New("agentId and customerId must not the same")
 	}
 	//validate exist districtId
-	_, err := t.districtRepository.FindById(request.DistrictId)
+	_, err := t.locationServices.FindDistrictById(request.DistrictId)
 	if err != nil {
 		return err
 	}

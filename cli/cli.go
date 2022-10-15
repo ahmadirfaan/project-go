@@ -48,9 +48,9 @@ func (cli *Cli) Run(application *app.Application) {
 	customerService := service.NewCustomerService(customerRepo, userRepo, db)
 	locationService := service.NewLocationService(provinceRepo, regencyRepo, districtRepo)
 	loginService := service.NewLoginService(userRepo)
-	agentService := service.NewAgentService(agentRepo, userRepo, districtRepo, db)
+	agentService := service.NewAgentService(agentRepo, userRepo, locationService, db)
 	transactionService := service.NewTransactionService(
-		transactionRepo, transactionTypeRepo, districtRepo, userRepo, agentRepo, db)
+		transactionRepo, transactionTypeRepo, locationService, userRepo, agentRepo, db)
 
 	// Controller
 	customerController := controller.NewCustomerController(customerService)

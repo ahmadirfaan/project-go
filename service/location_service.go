@@ -9,6 +9,7 @@ type LocationService interface {
 	GetAllLocationProvince() ([]database.Provinces, error)
 	GetAllRegencyByProvince(provinceId string) ([]database.Regencies, error)
 	GetAllDistrictByRegency(regencyId string) ([]database.Districts, error)
+	FindDistrictById(districtId string) (database.Districts, error)
 }
 
 type locationService struct {
@@ -38,4 +39,9 @@ func (l *locationService) GetAllRegencyByProvince(provinceId string) ([]database
 func (l *locationService) GetAllDistrictByRegency(regencyId string) ([]database.Districts, error) {
 	districts, err := l.DistrictRepository.FindByRegencyId(regencyId)
 	return districts, err
+}
+
+func (l *locationService) FindDistrictById(districtId string) (database.Districts, error) {
+	district, err := l.DistrictRepository.FindById(districtId)
+	return district, err
 }
