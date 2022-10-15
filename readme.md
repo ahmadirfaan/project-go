@@ -19,4 +19,4 @@ Untuk menjalankan aplikasi ini silahkan ikuti step-step di bawah ini :
 1. Diharapkan sudah menginstall docker agar dapat menjalankan database mySQL dan redis. Jalankan perintah docker compose pada file docker-compose.yaml
 2. Buat file .env pada sampel env.example untuk koneksi ke db dan redis
 3. Setelah itu pada directory "vendors" jalankan perintah sql pada mySQL client untuk input data sampel di db
-4. Cek openAPI doc untuk mencoba consume API-nya
+4. import collection postman di folder "vendors" untuk mencoba consume API-nya

@@ -1,0 +1,419 @@
+{
+	"info": {
+		"_postman_id": "966bb0ea-38ab-41b7-88ab-473c1a353d7f",
+		"name": "agent-go",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13053028"
+	},
+	"item": [
+		{
+			"name": "Done",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"customer\",\r\n    \"password\": \"12345678\",\r\n    \"role\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Ini merupakan jenis login untuk \nfield password minimal 8 panjang.\nrole diisi angka yang berarti 1 = Admin, 2 = Customer\n\ncontoh response sukses:\n\n```json\n{\n    \"code\": 200,\n    \"data\": {\n        \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MzQyNTkxMTgsInN1YiI6MSwidXNlcklkIjoxfQ.DAsZlFMNlIY9I88GdMdE8BrOz8gcfdnAtDBR-6GNSQY\"\n    },\n    \"message\": \"Sucess Login\"\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"ahmadirfaan3\",\r\n    \"password\": \"hibatullah12\",\r\n    \"name\": \"Ahmad Irfaan\",\r\n    \"noHandphone\": \"085707121623\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/customers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"customers"
+							]
+						},
+						"description": "untuk field noHandphone minimal 8 huruf dan maksimal 12 huruf\n\ncontoh response sukses :\n\n```json\n{\n    \"code\": 201,\n    \"data\": null,\n    \"message\": \"Sukses Membuat Akun\"\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Agent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"agent1\",\r\n    \"password\": \"wahyuningtyas\",\r\n    \"agentName\": \"Agent BRILINK\",\r\n    \"noHandphone\": \"085707121623\",\r\n    \"districtId\": \"1111030\",\r\n    \"address\": \"Jalan Gayungsari Barat 9/14\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/agents",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"agents"
+							]
+						},
+						"description": "untuk mendaftarkan agent noHandphone sama seperti register customer validasi bahwa field tersebut minimal 8 huruf dan maksimal 12 huruf.\nDistrictId merupakan id kecamatan yang sudah terdaftar di database jika request dengan districtId asal-asalan maka akan return response error dan untuk districtId harus 7 huruf yang semuanya berbentuk angka\n\ncontoh response sukses membuat akun agent :\n\n```json\n{\n    \"code\": 201,\n    \"data\": null,\n    \"message\": \" Sukses Membuat Akun\"\n}\n```\n\ncontoh response gagal ketika username yang digunakan sudah ada akan menimbulkan status code 409 :\n\n```json\n{\n    \"code\": 409,\n    \"data\": null,\n    \"message\": \"Username Already is exist\"\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Province",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/locations/provinces",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"locations",
+								"provinces"
+							]
+						},
+						"description": "untuk mendapatkan semua provinsi\n\ncontoh response :\n\n```json\n{\n    \"code\": 200,\n    \"data\": [\n        {\n            \"id\": \"11\",\n            \"name\": \"ACEH\"\n        },\n        {\n            \"id\": \"12\",\n            \"name\": \"SUMATERA UTARA\"\n        },\n        {\n            \"id\": \"13\",\n            \"name\": \"SUMATERA BARAT\"\n        },\n        {\n            \"id\": \"14\",\n            \"name\": \"RIAU\"\n        },\n        {\n            \"id\": \"15\",\n            \"name\": \"JAMBI\"\n        },\n        {\n            \"id\": \"16\",\n            \"name\": \"SUMATERA SELATAN\"\n        },\n        {\n            \"id\": \"17\",\n            \"name\": \"BENGKULU\"\n        },\n        {\n            \"id\": \"18\",\n            \"name\": \"LAMPUNG\"\n        },\n        {\n            \"id\": \"19\",\n            \"name\": \"KEPULAUAN BANGKA BELITUNG\"\n        },\n        {\n            \"id\": \"21\",\n            \"name\": \"KEPULAUAN RIAU\"\n        },\n        {\n            \"id\": \"31\",\n            \"name\": \"DKI JAKARTA\"\n        },\n        {\n            \"id\": \"32\",\n            \"name\": \"JAWA BARAT\"\n        },\n        {\n            \"id\": \"33\",\n            \"name\": \"JAWA TENGAH\"\n        },\n        {\n            \"id\": \"34\",\n            \"name\": \"DI YOGYAKARTA\"\n        },\n        {\n            \"id\": \"35\",\n            \"name\": \"JAWA TIMUR\"\n        },\n        {\n            \"id\": \"36\",\n            \"name\": \"BANTEN\"\n        },\n        {\n            \"id\": \"51\",\n            \"name\": \"BALI\"\n        },\n        {\n            \"id\": \"52\",\n            \"name\": \"NUSA TENGGARA BARAT\"\n        },\n        {\n            \"id\": \"53\",\n            \"name\": \"NUSA TENGGARA TIMUR\"\n        },\n        {\n            \"id\": \"61\",\n            \"name\": \"KALIMANTAN BARAT\"\n        },\n        {\n            \"id\": \"62\",\n            \"name\": \"KALIMANTAN TENGAH\"\n        },\n        {\n            \"id\": \"63\",\n            \"name\": \"KALIMANTAN SELATAN\"\n        },\n        {\n            \"id\": \"64\",\n            \"name\": \"KALIMANTAN TIMUR\"\n        },\n        {\n            \"id\": \"65\",\n            \"name\": \"KALIMANTAN UTARA\"\n        },\n        {\n            \"id\": \"71\",\n            \"name\": \"SULAWESI UTARA\"\n        },\n        {\n            \"id\": \"72\",\n            \"name\": \"SULAWESI TENGAH\"\n        },\n        {\n            \"id\": \"73\",\n            \"name\": \"SULAWESI SELATAN\"\n        },\n        {\n            \"id\": \"74\",\n            \"name\": \"SULAWESI TENGGARA\"\n        },\n        {\n            \"id\": \"75\",\n            \"name\": \"GORONTALO\"\n        },\n        {\n            \"id\": \"76\",\n            \"name\": \"SULAWESI BARAT\"\n        },\n        {\n            \"id\": \"81\",\n            \"name\": \"MALUKU\"\n        },\n        {\n            \"id\": \"82\",\n            \"name\": \"MALUKU UTARA\"\n        },\n        {\n            \"id\": \"91\",\n            \"name\": \"PAPUA BARAT\"\n        },\n        {\n            \"id\": \"94\",\n            \"name\": \"PAPUA\"\n        }\n    ],\n    \"message\": null\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Get City",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/locations?provinceId=35",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"locations"
+							],
+							"query": [
+								{
+									"key": "provinceId",
+									"value": "35"
+								}
+							]
+						},
+						"description": "provinceId merupakan id yang terdapat di data provinsi\n\ncontoh response sukses :\n```json\n{\n    \"code\": 200,\n    \"data\": [\n        {\n            \"id\": \"3501\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN PACITAN\"\n        },\n        {\n            \"id\": \"3502\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN PONOROGO\"\n        },\n        {\n            \"id\": \"3503\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN TRENGGALEK\"\n        },\n        {\n            \"id\": \"3504\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN TULUNGAGUNG\"\n        },\n        {\n            \"id\": \"3505\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN BLITAR\"\n        },\n        {\n            \"id\": \"3506\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN KEDIRI\"\n        },\n        {\n            \"id\": \"3507\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN MALANG\"\n        },\n        {\n            \"id\": \"3508\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN LUMAJANG\"\n        },\n        {\n            \"id\": \"3509\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN JEMBER\"\n        },\n        {\n            \"id\": \"3510\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN BANYUWANGI\"\n        },\n        {\n            \"id\": \"3511\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN BONDOWOSO\"\n        },\n        {\n            \"id\": \"3512\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN SITUBONDO\"\n        },\n        {\n            \"id\": \"3513\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN PROBOLINGGO\"\n        },\n        {\n            \"id\": \"3514\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN PASURUAN\"\n        },\n        {\n            \"id\": \"3515\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN SIDOARJO\"\n        },\n        {\n            \"id\": \"3516\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN MOJOKERTO\"\n        },\n        {\n            \"id\": \"3517\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN JOMBANG\"\n        },\n        {\n            \"id\": \"3518\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN NGANJUK\"\n        },\n        {\n            \"id\": \"3519\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN MADIUN\"\n        },\n        {\n            \"id\": \"3520\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN MAGETAN\"\n        },\n        {\n            \"id\": \"3521\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN NGAWI\"\n        },\n        {\n            \"id\": \"3522\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN BOJONEGORO\"\n        },\n        {\n            \"id\": \"3523\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN TUBAN\"\n        },\n        {\n            \"id\": \"3524\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN LAMONGAN\"\n        },\n        {\n            \"id\": \"3525\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN GRESIK\"\n        },\n        {\n            \"id\": \"3526\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN BANGKALAN\"\n        },\n        {\n            \"id\": \"3527\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN SAMPANG\"\n        },\n        {\n            \"id\": \"3528\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN PAMEKASAN\"\n        },\n        {\n            \"id\": \"3529\",\n            \"provinceId\": \"35\",\n            \"name\": \"KABUPATEN SUMENEP\"\n        },\n        {\n            \"id\": \"3571\",\n            \"provinceId\": \"35\",\n            \"name\": \"KOTA KEDIRI\"\n        },\n        {\n            \"id\": \"3572\",\n            \"provinceId\": \"35\",\n            \"name\": \"KOTA BLITAR\"\n        },\n        {\n            \"id\": \"3573\",\n            \"provinceId\": \"35\",\n            \"name\": \"KOTA MALANG\"\n        },\n        {\n            \"id\": \"3574\",\n            \"provinceId\": \"35\",\n            \"name\": \"KOTA PROBOLINGGO\"\n        },\n        {\n            \"id\": \"3575\",\n            \"provinceId\": \"35\",\n            \"name\": \"KOTA PASURUAN\"\n        },\n        {\n            \"id\": \"3576\",\n            \"provinceId\": \"35\",\n            \"name\": \"KOTA MOJOKERTO\"\n        },\n        {\n            \"id\": \"3577\",\n            \"provinceId\": \"35\",\n            \"name\": \"KOTA MADIUN\"\n        },\n        {\n            \"id\": \"3578\",\n            \"provinceId\": \"35\",\n            \"name\": \"KOTA SURABAYA\"\n        },\n        {\n            \"id\": \"3579\",\n            \"provinceId\": \"35\",\n            \"name\": \"KOTA BATU\"\n        }\n    ],\n    \"message\": null\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Get DistrictID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/locations/districts?regencyId=39999",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"locations",
+								"districts"
+							],
+							"query": [
+								{
+									"key": "regencyId",
+									"value": "39999"
+								}
+							]
+						},
+						"description": "untuk mendapatkan semua daftar kecamatan di kota yang sudah dipilih(regencyId)\n\n```json\n{\n    \"code\": 200,\n    \"data\": [\n        {\n            \"id\": \"3578010\",\n            \"regencyId\": \"3578\",\n            \"name\": \"KARANG PILANG\"\n        },\n        {\n            \"id\": \"3578020\",\n            \"regencyId\": \"3578\",\n            \"name\": \"JAMBANGAN\"\n        },\n        {\n            \"id\": \"3578030\",\n            \"regencyId\": \"3578\",\n            \"name\": \"GAYUNGAN\"\n        },\n        {\n            \"id\": \"3578040\",\n            \"regencyId\": \"3578\",\n            \"name\": \"WONOCOLO\"\n        },\n        {\n            \"id\": \"3578050\",\n            \"regencyId\": \"3578\",\n            \"name\": \"TENGGILIS MEJOYO\"\n        },\n        {\n            \"id\": \"3578060\",\n            \"regencyId\": \"3578\",\n            \"name\": \"GUNUNG ANYAR\"\n        },\n        {\n            \"id\": \"3578070\",\n            \"regencyId\": \"3578\",\n            \"name\": \"RUNGKUT\"\n        },\n        {\n            \"id\": \"3578080\",\n            \"regencyId\": \"3578\",\n            \"name\": \"SUKOLILO\"\n        },\n        {\n            \"id\": \"3578090\",\n            \"regencyId\": \"3578\",\n            \"name\": \"MULYOREJO\"\n        },\n        {\n            \"id\": \"3578100\",\n            \"regencyId\": \"3578\",\n            \"name\": \"GUBENG\"\n        },\n        {\n            \"id\": \"3578110\",\n            \"regencyId\": \"3578\",\n            \"name\": \"WONOKROMO\"\n        },\n        {\n            \"id\": \"3578120\",\n            \"regencyId\": \"3578\",\n            \"name\": \"DUKUH PAKIS\"\n        },\n        {\n            \"id\": \"3578130\",\n            \"regencyId\": \"3578\",\n            \"name\": \"WIYUNG\"\n        },\n        {\n            \"id\": \"3578140\",\n            \"regencyId\": \"3578\",\n            \"name\": \"LAKARSANTRI\"\n        },\n        {\n            \"id\": \"3578141\",\n            \"regencyId\": \"3578\",\n            \"name\": \"SAMBIKEREP\"\n        },\n        {\n            \"id\": \"3578150\",\n            \"regencyId\": \"3578\",\n            \"name\": \"TANDES\"\n        },\n        {\n            \"id\": \"3578160\",\n            \"regencyId\": \"3578\",\n            \"name\": \"SUKO MANUNGGAL\"\n        },\n        {\n            \"id\": \"3578170\",\n            \"regencyId\": \"3578\",\n            \"name\": \"SAWAHAN\"\n        },\n        {\n            \"id\": \"3578180\",\n            \"regencyId\": \"3578\",\n            \"name\": \"TEGALSARI\"\n        },\n        {\n            \"id\": \"3578190\",\n            \"regencyId\": \"3578\",\n            \"name\": \"GENTENG\"\n        },\n        {\n            \"id\": \"3578200\",\n            \"regencyId\": \"3578\",\n            \"name\": \"TAMBAKSARI\"\n        },\n        {\n            \"id\": \"3578210\",\n            \"regencyId\": \"3578\",\n            \"name\": \"KENJERAN\"\n        },\n        {\n            \"id\": \"3578211\",\n            \"regencyId\": \"3578\",\n            \"name\": \"BULAK\"\n        },\n        {\n            \"id\": \"3578220\",\n            \"regencyId\": \"3578\",\n            \"name\": \"SIMOKERTO\"\n        },\n        {\n            \"id\": \"3578230\",\n            \"regencyId\": \"3578\",\n            \"name\": \"SEMAMPIR\"\n        },\n        {\n            \"id\": \"3578240\",\n            \"regencyId\": \"3578\",\n            \"name\": \"PABEAN CANTIAN\"\n        },\n        {\n            \"id\": \"3578250\",\n            \"regencyId\": \"3578\",\n            \"name\": \"BUBUTAN\"\n        },\n        {\n            \"id\": \"3578260\",\n            \"regencyId\": \"3578\",\n            \"name\": \"KREMBANGAN\"\n        },\n        {\n            \"id\": \"3578270\",\n            \"regencyId\": \"3578\",\n            \"name\": \"ASEMROWO\"\n        },\n        {\n            \"id\": \"3578280\",\n            \"regencyId\": \"3578\",\n            \"name\": \"BENOWO\"\n        },\n        {\n            \"id\": \"3578281\",\n            \"regencyId\": \"3578\",\n            \"name\": \"PAKAL\"\n        }\n    ],\n    \"message\": null\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Transactions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"agentId\": 1,\r\n    \"address\": \"Jalan Gayungsari Barat 9/14\",\r\n    \"districtId\": \"3578030\",\r\n    \"amount\": 190000,\r\n    \"transactionTypeId\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/transactions",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions"
+							]
+						},
+						"description": "membuat transaksi di request ini:\n- field customerId dan agentId tidak boleh sama akan menimbulkan response error\n- field agentId dan customerId jika diisi dengan data yang tidak ada dalam\n- database akan menimbulkan response error begitu juga dengan districtId.\n- transactionTypeId id jenis transaksi yang ada dalam database seperti Mini ATM - Isi Ulang Pulsa\n\nContoh Response Sukses: \n```json\n{\n    \"code\": 201,\n    \"data\": null,\n    \"message\": \"Transaksi Diterima \"\n}\n```\n\nContoh Response Gagal: \n```json\n{\n    \"code\": 400,\n    \"data\": null,\n    \"message\": \"Error in field: TransactionTypeId\"\n}\n```\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Transaction by UserId",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/transactions",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions"
+							]
+						},
+						"description": "Untuk mendapatkan list semua transaksi sudah otomatis dengan mengirimkan header authorization di backend akan handle daftar transaksi yang dimiliki oleh user siapa.\n\ncontoh response sukses :\n\n```json\n{\n    \"code\": 200,\n    \"data\": null,\n    \"message\": [\n        {\n            \"id\": 1,\n            \"transactionType\": {\n                \"serviceTypeTransaction\": {\n                    \"Id\": 1,\n                    \"nameServiceTransaction\": \"Laku Pandai\"\n                },\n                \"nameTansactionType\": \"Report\"\n            },\n            \"customerId\": 1,\n            \"agentId\": 2,\n            \"address\": \"Jalan Gayungsari Barat 9/14\",\n            \"districtId\": \"3578030\",\n            \"amount\": 150000,\n            \"statusTransaction\": 0\n        },\n        {\n            \"id\": 2,\n            \"transactionType\": {\n                \"serviceTypeTransaction\": {\n                    \"Id\": 1,\n                    \"nameServiceTransaction\": \"Laku Pandai\"\n                },\n                \"nameTansactionType\": \"Report\"\n            },\n            \"customerId\": 1,\n            \"agentId\": 2,\n            \"address\": \"Jalan Gayungsari Barat 9/14\",\n            \"districtId\": \"3578030\",\n            \"amount\": 150000,\n            \"statusTransaction\": 0\n        },\n        {\n            \"id\": 3,\n            \"transactionType\": {\n                \"serviceTypeTransaction\": {\n                    \"Id\": 1,\n                    \"nameServiceTransaction\": \"Laku Pandai\"\n                },\n                \"nameTansactionType\": \"Isi Ulang Pulsa\"\n            },\n            \"customerId\": 1,\n            \"agentId\": 2,\n            \"address\": \"Jalan Gayungsari Barat 9/14\",\n            \"districtId\": \"3578030\",\n            \"amount\": 190000,\n            \"statusTransaction\": 0\n        },\n        {\n            \"id\": 4,\n            \"transactionType\": {\n                \"serviceTypeTransaction\": {\n                    \"Id\": 2,\n                    \"nameServiceTransaction\": \"Tunai\"\n                },\n                \"nameTansactionType\": \"Tarik Tunai\"\n            },\n            \"customerId\": 1,\n            \"agentId\": 2,\n            \"address\": \"Jalan Gayungsari Barat 9/14\",\n            \"districtId\": \"3578030\",\n            \"amount\": 190000,\n            \"statusTransaction\": 0\n        }\n    ]\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Status Transactions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"statusTransaction\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/transactions/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Give Rating Transactions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rating\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/transactions/rating/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"rating",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Agents DistrictId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/agents?districtId=3578030",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"agents"
+							],
+							"query": [
+								{
+									"key": "districtId",
+									"value": "3578030"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete TransactionBy Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/transactions/5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Home API",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

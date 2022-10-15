@@ -12,7 +12,7 @@
 -- Table structure for table `provinces`
 --
 
-USE `backend-b-antar-jemput`;
+USE `agent-go`;
 
 DROP TABLE IF EXISTS `provinces`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

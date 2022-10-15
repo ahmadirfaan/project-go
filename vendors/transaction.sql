@@ -1,6 +1,6 @@
 -- Pemilihan database untuk dimasukkan ke dalam transaction --
 
-use `backend-b-antar-jemput`;
+use `agent-go`;
 
 INSERT INTO transaction_types (created_at, updated_at, id, service_type_transaction_id, name_type_transaction) values (current_time, current_time, 1, 1,  "Cash-in & Out");
 INSERT INTO transaction_types (created_at, updated_at, id, service_type_transaction_id, name_type_transaction) values (current_time, current_time, 2, 1,  "Report");
