@@ -20,11 +20,6 @@ type Config struct {
 	DBHost                   string
 	DBPort                   int
 	DBName                   string
-	MinioEndpoint            string
-	MinioAccessKey           string
-	MinioSecretKey           string
-	MinioRegion              string
-	MinioBucket              string
 	DBMaxConnections         int
 	DBMaxIdleConnections     int
 	DBMaxLifetimeConnections int
@@ -54,11 +49,6 @@ func Init() *Config {
 		DBMaxConnections:         GetInt("DB_MAX_CONNECTIONS"),
 		DBMaxIdleConnections:     GetInt("DB_MAX_IDLE_CONNECTIONS"),
 		DBMaxLifetimeConnections: GetInt("DB_MAX_LIFETIME_CONNECTIONS"),
-		// MinioEndpoint:  GetString("MINIO_ENDPOINT"),
-		// MinioAccessKey: GetString("MINIO_ACCESS_KEY"),
-		// MinioSecretKey: GetString("MINIO_SECRET_KEY"),
-		// MinioRegion:    GetString("MINIO_REGION"),
-		// MinioBucket:    GetString("MINIO_BUCKET"),
 	}
 
 	return appConfig
