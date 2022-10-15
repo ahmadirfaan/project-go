@@ -11,6 +11,7 @@ import (
 	"github.com/ahmadirfaan/project-go/app"
 	"github.com/ahmadirfaan/project-go/config"
 	databaseconn "github.com/ahmadirfaan/project-go/config/database"
+	redisconn "github.com/ahmadirfaan/project-go/config/redis"
 	"github.com/ahmadirfaan/project-go/controller"
 	"github.com/ahmadirfaan/project-go/repositories"
 	"github.com/ahmadirfaan/project-go/service"
@@ -34,6 +35,7 @@ func (cli *Cli) Run(application *app.Application) {
 
 	// set up connection
 	db := databaseconn.InitDb()
+	connRedis := redisconn.InitRedisClient()
 	//Repository
 	userRepo := repositories.NewUserRepository(db)
 	customerRepo := repositories.NewCustomerRepository(db)
@@ -46,7 +48,7 @@ func (cli *Cli) Run(application *app.Application) {
 
 	// Service
 	customerService := service.NewCustomerService(customerRepo, userRepo, db)
-	locationService := service.NewLocationService(provinceRepo, regencyRepo, districtRepo)
+	locationService := service.NewLocationService(provinceRepo, regencyRepo, districtRepo, connRedis)
 	loginService := service.NewLoginService(userRepo)
 	agentService := service.NewAgentService(agentRepo, userRepo, locationService, db)
 	transactionService := service.NewTransactionService(

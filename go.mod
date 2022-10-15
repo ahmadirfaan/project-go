@@ -18,6 +18,7 @@ require (
 require (
 	github.com/andybalholm/brotli v1.0.3 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
+	github.com/gomodule/redigo v1.8.9 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/stretchr/testify v1.7.0 // indirect
