@@ -12,10 +12,10 @@ type RedisRepository interface {
 }
 
 type redisRepository struct {
-	Redis redis.Conn
+	Redis *redis.Pool
 }
 
-func NewRedisRepository(redis redis.Conn) RedisRepository {
+func NewRedisRepository(redis *redis.Pool) RedisRepository {
 	return redisRepository{
 		Redis: redis,
 	}
@@ -23,12 +23,19 @@ func NewRedisRepository(redis redis.Conn) RedisRepository {
 
 func (r redisRepository) SetDataToRedis(data interface{}, key string, expire int) error {
 	marshal, _ := json.Marshal(data)
-	_, err := r.Redis.Do("SET", key, marshal)
+	connection := r.Redis.Get()
+	defer func(connection redis.Conn) {
+		err := connection.Close()
+		if err != nil {
+			log.Info("Error Connection to redis")
+		}
+	}(connection)
+	_, err := connection.Do("SET", key, marshal)
 	if err != nil {
 		log.Error("Error connection to redis store data : %v ", data)
 		return err
 	}
-	_, err = r.Redis.Do("EXPIRE", key, expire)
+	_, err = connection.Do("EXPIRE", key, expire)
 	if err != nil {
 		log.Error("Error set expired key to redis : %v ", data)
 		return err
@@ -38,7 +45,14 @@ func (r redisRepository) SetDataToRedis(data interface{}, key string, expire int
 }
 
 func (r redisRepository) GetDataFromRedis(key string) ([]byte, error) {
-	data, err := r.Redis.Do("GET", key)
+	connection := r.Redis.Get()
+	defer func(connection redis.Conn) {
+		err := connection.Close()
+		if err != nil {
+			log.Info("Error Connection to redis")
+		}
+	}(connection)
+	data, err := connection.Do("GET", key)
 	if err != nil || data == nil {
 		return nil, err
 	}
@@ -47,9 +61,9 @@ func (r redisRepository) GetDataFromRedis(key string) ([]byte, error) {
 }
 
 func convertToString(bs interface{}) string {
-	ba := []byte{}
+	var ba []byte
 	for _, b := range bs.([]uint8) {
-		ba = append(ba, byte(b))
+		ba = append(ba, b)
 	}
 	return string(ba)
 }
